@@ -371,16 +371,16 @@ public class Utils {
      * @return the simplified major version, or -1 for bungeecord
      * @since 1.0.0
      */
-    private static final Pattern MC_VERSION_PATTERN = Pattern.compile("1\\.(\\d+)(?:\\.\\d+)?");
-
     private static int getVersion() {
         if (!classExists("org.bukkit.Bukkit") && classExists("net.md_5.bungee.api.ChatColor")) {
             return -1;
         }
 
+        Pattern mcVersionPattern = Pattern.compile("1\\.(\\d+)(?:\\.\\d+)?");
+
         // getBukkitVersion() reliably returns "1.X.Y-R0.1-SNAPSHOT"
         String bukkitVersion = Bukkit.getBukkitVersion();
-        Matcher matcher = MC_VERSION_PATTERN.matcher(bukkitVersion);
+        Matcher matcher = mcVersionPattern.matcher(bukkitVersion);
         if (matcher.find()) {
             return Integer.parseInt(matcher.group(1));
         }
@@ -388,7 +388,7 @@ public class Utils {
         // Fallback: parse "MC: 1.X.Y" out of getVersion()
         String serverVersion = Bukkit.getVersion();
         Validate.notEmpty(serverVersion, "Cannot get major Minecraft version from null or empty string");
-        matcher = MC_VERSION_PATTERN.matcher(serverVersion);
+        matcher = mcVersionPattern.matcher(serverVersion);
         if (matcher.find()) {
             return Integer.parseInt(matcher.group(1));
         }
