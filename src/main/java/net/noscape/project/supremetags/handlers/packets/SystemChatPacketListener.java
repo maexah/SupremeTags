@@ -38,6 +38,7 @@ public class SystemChatPacketListener extends PacketAdapter {
         WrappedChatComponent chatComponent = packet.getChatComponents().readSafely(0);
         if (chatComponent != null) {
             String messageJson = chatComponent.getJson();
+            if (messageJson == null || !containsTagPlaceholder(messageJson)) return;
             try {
                 JsonObject jsonObject = JsonParser.parseString(messageJson).getAsJsonObject();
 
@@ -56,6 +57,10 @@ public class SystemChatPacketListener extends PacketAdapter {
                 // Bukkit.getLogger().warning("[SupremeTags] Failed to parse chat JSON: " + e.getMessage());
             }
         }
+    }
+
+    private static boolean containsTagPlaceholder(String s) {
+        return s.contains("{tag}") || s.contains("{TAG}") || s.contains("{supremetags_tag}");
     }
 
     private void replacePlaceholdersInJson(JsonElement element, UUID senderUUID, Player viewer) {
@@ -78,6 +83,7 @@ public class SystemChatPacketListener extends PacketAdapter {
     }
 
     private String replaceTagPlaceholders(String text, UUID uuid, Player viewer) {
+        if (!containsTagPlaceholder(text)) return text;
         if (uuid == null) uuid = viewer.getUniqueId(); // Fallback to viewer
 
         String activeTag = UserData.getActive(uuid);

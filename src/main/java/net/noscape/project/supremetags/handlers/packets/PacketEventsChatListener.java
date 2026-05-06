@@ -41,6 +41,7 @@ public class PacketEventsChatListener implements PacketListener {
 
             // Serialize component to JSON string
             String json = GsonComponentSerializer.gson().serialize(originalComponent);
+            if (!containsTagPlaceholder(json)) return;
 
             // Parse JSON string to JsonObject for editing
             JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
@@ -86,6 +87,7 @@ public class PacketEventsChatListener implements PacketListener {
 
     private String replaceTagPlaceholders(String text, UUID uuid) {
         if (uuid == null) return text;
+        if (!containsTagPlaceholder(text)) return text;
 
         String activeTag = UserData.getActive(uuid);
         String displayTag = SupremeTags.getInstance().getConfig().getString("placeholders.chat.none-output");
@@ -112,6 +114,10 @@ public class PacketEventsChatListener implements PacketListener {
                 .replace("{tag}", formatted)
                 .replace("{TAG}", formatted)
                 .replace("{supremetags_tag}", formatted);
+    }
+
+    private static boolean containsTagPlaceholder(String s) {
+        return s.contains("{tag}") || s.contains("{TAG}") || s.contains("{supremetags_tag}");
     }
 
     private String extractSenderFromJson(JsonObject jsonObject) {
