@@ -136,4 +136,54 @@ jar {
     }
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+
+    // XSeries' XMaterial$Data static initializer parses Bukkit.getVersion() with the
+    // regex "MC: \d\.(\d+)", which throws on modern Paper/Purpur builds whose MC: tag
+    // is the build version (e.g. "MC: 26.1.2") rather than a 1.X.Y Minecraft version.
+    // Length-preserving byte replacement of the regex literal in the shaded class so
+    // it captures any two-digit run, leaving the constant pool layout intact.
+    doLast {
+        def file = archiveFile.get().asFile
+        byte[] needle = ([0x01, 0x00, 0x0D,
+                          0x4D, 0x43, 0x3A, 0x20, 0x5C, 0x64, 0x5C, 0x2E,
+                          0x28, 0x5C, 0x64, 0x2B, 0x29] as byte[])
+        byte[] replacement = ([0x01, 0x00, 0x0D,
+                               0x5C, 0x44, 0x28, 0x5C, 0x64, 0x7B, 0x32, 0x7D,
+                               0x29, 0x5C, 0x44, 0x2E, 0x3F] as byte[])
+        def tmp = new File(file.parentFile, file.name + ".tmp")
+        boolean patched = false
+        new java.util.zip.ZipFile(file).withCloseable { zip ->
+            new java.util.zip.ZipOutputStream(tmp.newOutputStream()).withCloseable { out ->
+                zip.entries().each { entry ->
+                    byte[] bytes = zip.getInputStream(entry).bytes
+                    if (entry.name == 'com/cryptomorin/xseries/XMaterial$Data.class') {
+                        int idx = -1
+                        for (int i = 0; i <= bytes.length - needle.length && idx < 0; i++) {
+                            boolean match = true
+                            for (int j = 0; j < needle.length; j++) {
+                                if (bytes[i + j] != needle[j]) { match = false; break }
+                            }
+                            if (match) idx = i
+                        }
+                        if (idx >= 0) {
+                            System.arraycopy(replacement, 0, bytes, idx, replacement.length)
+                            patched = true
+                        }
+                    }
+                    def newEntry = new java.util.zip.ZipEntry(entry.name)
+                    newEntry.time = entry.time
+                    out.putNextEntry(newEntry)
+                    out.write(bytes)
+                    out.closeEntry()
+                }
+            }
+        }
+        if (!patched) {
+            logger.warn("[supremetags] Did not find XMaterial\$Data version regex to patch")
+        } else {
+            logger.lifecycle("[supremetags] Patched XMaterial\$Data version regex for Purpur compatibility")
+        }
+        file.delete()
+        tmp.renameTo(file)
+    }
 }
