@@ -1,7 +1,7 @@
-name: 'SupremeTags'
+name: 'PantryPins'
 version: '${version}'
-main: net.noscape.project.supremetags.SupremeTags
-api-version: 1.13
+main: me.pantrypins.plugin.PantryPins
+api-version: '26.1'
 depend: [NBTAPI]
 softdepend:
   - ProtocolLib
@@ -15,12 +15,12 @@ softdepend:
   - SimpleItemGenerator
   - ExecutableItems
   - SCore
-authors: [Scape]
+authors: [PantryPins]
 folia-supported: true
-description: Allow players to show of their supreme tags!
+description: PantryPins - Tags for your server. (Fork of SupremeTags by Scape.)
 commands:
   tags:
-    description: Main command for SupremeTags
+    description: Main command for PantryPins.
     usage: /<command>
     aliases:
       - tag
