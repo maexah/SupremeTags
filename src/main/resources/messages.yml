@@ -62,13 +62,13 @@ messages:
     cancelled: '&6&lStage: &7Cancelled setup process.'
   help:
     default:
-      - '&6&lSupremeTags:'
+      - '&6&lPantryPins:'
       - ''
       - '&e/%command% &7- will open the tag menu.'
       - '&e/%command% help &7- displays this help message.'
       - '&e/%command% withdraw <identifier> &7- withdraws the owned tag into a voucher.'
     admin:
-      - '&6&lSupremeTags: &7(ADMIN)'
+      - '&6&lPantryPins: &7(ADMIN)'
       - ''
       - '&e/%command% &7- will open the tag menu.'
       - '&e/%command% create <identifier> <tag> &7- creates a new tag.'
@@ -77,7 +77,7 @@ messages:
       - '&e/%command% givevoucher <player> <identifier> (-s) &7- gives a voucher to the player.'
       - '&e/%command% reset <player> &7- resets the players tag to None.'
       - '&e/%command% removetagp <player> <tag> &7- remove a tag/permission from a player.'
-      - '&e/%command% merge &7- merges tag plugins into supremetags.'
+      - '&e/%command% merge &7- merges tag plugins into PantryPins.'
       - '&e/%command% reload &7- reloads the config.yml & unloads/loads tags.'
       - '&e/%command% help &7- displays this help message.'
       - '&e/%command% config &7- Edit/toggle configuration from a GUI.'
@@ -97,18 +97,17 @@ messages:
   dev-build-alert:
     - '&r'
     - '&c&l⚠ DEV BUILD ACTIVE ⚠'
-    - '&eYou are running a &eDevelopment Build of SupremeTags.'
+    - '&eYou are running a &eDevelopment Build of PantryPins.'
     - '&eExpect bugs, unfinished features, and chaos.'
     - '&r'
     - '&7Version: &f%version%'
     - '&7Link: &f%link%'
     - '&r'
   debug:
-    - "&f&lSupremeTags2 Debug Report &8➜"
+    - "&f&lPantryPins Debug Report &8➜"
     - ""
     - "&7Version:&f %version%"
     - "&7Author:&f %author%"
-    - "&7Discord:&f %discord%"
     - ""
     - "&e&lBasic Information:"
     - " &8● &7Tags Loaded: &f%tags_loaded%"
